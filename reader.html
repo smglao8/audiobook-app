@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Reader</title>
+
+<link rel="stylesheet" href="style.css">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+<script>
+pdfjsLib.GlobalWorkerOptions.workerSrc =
+"https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js";
+</script>
+
+<script src="https://unpkg.com/mammoth/mammoth.browser.min.js"></script>
+</head>
+
+<body>
+
+<!-- NAV -->
+<div class="nav">
+  <a href="home.html">🏠 Home</a>
+  <a href="reader.html">📄 Reader</a>
+  <a href="generate.html">🎧 Generate</a>
+  <a href="library.html">📚 Library</a>
+  <a href="translate.html">🌍 Translate</a>
+  <a href="settings.html">⚙ Settings</a>
+</div>
+
+<div class="container">
+
+<h1>📄 Smart Reader</h1>
+
+<h2>📋 Paste & Read Mode</h2>
+
+<textarea id="pasteBox" placeholder="Paste or type your text here..."></textarea>
+
+<div class="controls">
+<button class="action" onclick="readPastedText()">▶ Read</button>
+<button class="pause" onclick="pauseSpeech()">⏸ Pause</button>
+<button class="blue" onclick="resumeSpeech()">▶ Resume</button>
+<button class="stop" onclick="stopSpeech()">⏹ Stop</button>
+<button class="purple" onclick="addPasteToQueue()">➕ Add to Audiobook Queue</button>
+</div>
+
+<!-- FILE INPUT -->
+<input type="file" id="fileInput">
+
+<!-- PAGE CONTROLS -->
+<div class="controls">
+<button class="blue" onclick="prevPage()">⬅ Prev</button>
+<button class="blue" onclick="nextPage()">Next ➡</button>
+<button class="purple" onclick="addToQueue()">➕ Add Page to Audiobook</button>
+</div>
+
+<!-- VIEWER -->
+<div class="viewer" id="viewer">
+Upload a PDF, DOCX, or TXT file to begin reading...
+</div>
+
+<!-- PAGE INFO -->
+<p id="pageInfo">No file loaded</p>
+
+<!-- QUEUE -->
+<h2>🎧 Audiobook Queue</h2>
+<div id="queueBox" class="card">Empty queue</div>
+
+</div>
+
+<script>
+
+let currentSpeech = null;
+
+/* ================= READ PASTED TEXT ================= */
+function readPastedText(){
+
+const text = document.getElementById("pasteBox").value;
+
+if(!text || text.trim() === ""){
+alert("Please paste some text first.");
+return;
+}
+
+stopSpeech();
+
+/* load settings */
+const settings = JSON.parse(localStorage.getItem("audiobookSettings")) || {};
+
+/* create speech */
+currentSpeech = new SpeechSynthesisUtterance(text);
+
+/* speed control */
+currentSpeech.rate = settings.speed || 1;
+
+/* voice selection (if available) */
+const voices = speechSynthesis.getVoices();
+if(voices.length > 0){
+currentSpeech.voice = voices[0]; // fallback voice
+}
+
+speechSynthesis.speak(currentSpeech);
+}
+
+/* ================= CONTROLS ================= */
+function pauseSpeech(){
+speechSynthesis.pause();
+}
+
+function resumeSpeech(){
+speechSynthesis.resume();
+}
+
+function stopSpeech(){
+speechSynthesis.cancel();
+}
+
+/* ================= ADD TO AUDIOBOOK QUEUE ================= */
+function addPasteToQueue(){
+
+const text = document.getElementById("pasteBox").value;
+
+if(!text || text.trim() === ""){
+alert("Nothing to add.");
+return;
+}
+
+/* make sure queue exists */
+if(!window.queue){
+window.queue = [];
+}
+
+queue.push({
+page: "Pasted Text",
+text: text
+});
+
+/* save to generator */
+localStorage.setItem("audiobookQueue", JSON.stringify(queue));
+
+renderQueue();
+
+alert("Added to audiobook queue!");
+}
+
+
+
+
+let pdfDoc = null;
+let currentPage = 1;
+let totalPages = 0;
+let pageText = "";
+let queue = [];
+
+/* ================= LOAD FILE ================= */
+document.getElementById("fileInput").addEventListener("change", async function(e){
+
+const file = e.target.files[0];
+if(!file) return;
+
+const ext = file.name.split(".").pop().toLowerCase();
+
+/* ---------- TXT ---------- */
+if(ext === "txt"){
+const reader = new FileReader();
+reader.onload = function(ev){
+pageText = ev.target.result;
+document.getElementById("viewer").innerText = pageText;
+document.getElementById("pageInfo").innerText = "TXT loaded";
+};
+reader.readAsText(file);
+}
+
+/* ---------- DOCX ---------- */
+else if(ext === "docx"){
+const reader = new FileReader();
+reader.onload = function(ev){
+mammoth.extractRawText({arrayBuffer: ev.target.result})
+.then(result=>{
+pageText = result.value;
+document.getElementById("viewer").innerText = pageText;
+document.getElementById("pageInfo").innerText = "DOCX loaded";
+});
+};
+reader.readAsArrayBuffer(file);
+}
+
+/* ---------- PDF ---------- */
+else if(ext === "pdf"){
+const reader = new FileReader();
+reader.onload = async function(){
+const typedArray = new Uint8Array(this.result);
+pdfDoc = await pdfjsLib.getDocument(typedArray).promise;
+totalPages = pdfDoc.numPages;
+currentPage = 1;
+renderPage(currentPage);
+};
+reader.readAsArrayBuffer(file);
+}
+});
+
+/* ================= PDF RENDER ================= */
+async function renderPage(num){
+const page = await pdfDoc.getPage(num);
+const content = await page.getTextContent();
+
+pageText = content.items.map(i => i.str).join(" ");
+
+document.getElementById("viewer").innerText = pageText;
+
+document.getElementById("pageInfo").innerText =
+`Page ${currentPage} / ${totalPages}`;
+}
+
+/* ================= NAVIGATION ================= */
+function nextPage(){
+if(!pdfDoc || currentPage >= totalPages) return;
+currentPage++;
+renderPage(currentPage);
+}
+
+function prevPage(){
+if(!pdfDoc || currentPage <= 1) return;
+currentPage--;
+renderPage(currentPage);
+}
+
+/* ================= ADD TO QUEUE ================= */
+function addToQueue(){
+
+if(!pageText) return;
+
+queue.push({
+page: currentPage,
+text: pageText
+});
+
+/* SAVE FOR GENERATOR */
+localStorage.setItem("audiobookQueue", JSON.stringify(queue));
+
+renderQueue();
+}
+
+/* ================= RENDER QUEUE ================= */
+function renderQueue(){
+
+const box = document.getElementById("queueBox");
+
+if(queue.length === 0){
+box.innerHTML = "Empty queue";
+return;
+}
+
+box.innerHTML = queue.map(q=>`
+<div class="card">
+<b>Page ${q.page}</b>
+<p>${q.text.slice(0,120)}...</p>
+</div>
+`).join("");
+}
+
+</script>
+
+</body>
+</html>

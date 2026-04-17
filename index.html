@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Audiobook Assistant</title>
+
+<link rel="stylesheet" href="style.css">
+
+<style>
+
+/* ROOT THEMES */
+:root {
+  --bg: linear-gradient(135deg, #e0f2fe, #c7d2fe);
+  --card: rgba(255,255,255,0.6);
+  --text: #1e293b;
+}
+
+.dark {
+  --bg: linear-gradient(135deg, #0f172a, #1e293b);
+  --card: rgba(30,41,59,0.6);
+  --text: #f1f5f9;
+}
+
+/* BODY */
+body {
+  margin: 0;
+  font-family: sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  transition: 0.5s;
+}
+
+/* NAV */
+.nav {
+  display: flex;
+  justify-content: space-between;
+  padding: 15px 30px;
+  background: var(--card);
+  backdrop-filter: blur(10px);
+}
+
+/* TOGGLE */
+.toggle {
+  cursor: pointer;
+}
+
+/* CONTAINER */
+.container {
+  padding: 30px;
+}
+
+/* FLOAT CARDS */
+.card {
+  background: var(--card);
+  backdrop-filter: blur(12px);
+  padding: 20px;
+  border-radius: 15px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+  margin-bottom: 20px;
+
+  /* animation */
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeUp 0.8s forwards;
+}
+
+/* STAGGER */
+.card:nth-child(1){animation-delay:0.1s;}
+.card:nth-child(2){animation-delay:0.2s;}
+.card:nth-child(3){animation-delay:0.3s;}
+.card:nth-child(4){animation-delay:0.4s;}
+.card:nth-child(5){animation-delay:0.5s;}
+
+/* HERO */
+.hero {
+  text-align: center;
+}
+
+/* BUTTONS */
+.mainBtn {
+  padding: 12px 20px;
+  margin: 8px;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+}
+
+.primary { background:#3b82f6; color:white; }
+.secondary { background:#8b5cf6; color:white; }
+
+/* GRID */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit,minmax(220px,1fr));
+  gap: 20px;
+}
+
+/* INPUTS */
+input, textarea {
+  width: 100%;
+  margin-top: 10px;
+  padding: 10px;
+  border-radius: 10px;
+  border: none;
+}
+
+/* ANIMATION */
+@keyframes fadeUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* FOOTER */
+.footer {
+  text-align: center;
+  margin-top: 20px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<!-- NAV -->
+<div class="nav">
+  <div>🎧 Audiobook</div>
+
+  <div>
+    <span class="toggle" onclick="toggleTheme()">🌙 / ☀️</span>
+  </div>
+</div>
+
+<div class="container">
+
+<!-- HERO -->
+<div class="card hero">
+<h1>🎧 Audiobook Assistant</h1>
+<p>Create, translate & listen anywhere</p>
+
+<button class="mainBtn primary" onclick="goToApp()">🚀 Get Started</button>
+<button class="mainBtn secondary" onclick="goToAbout()">👨‍💻 About</button>
+</div>
+
+<!-- FEATURES -->
+<div class="grid">
+
+<div class="card">📄 Smart Reader</div>
+<div class="card">🎧 Audiobook Generator</div>
+<div class="card">🌍 Translator</div>
+<div class="card">📚 Library</div>
+<div class="card">⚙ Settings</div>
+<div class="card">☁ Cloud (Soon)</div>
+
+</div>
+
+<!-- CONTACT -->
+<div class="card">
+
+<h3>📩 Contact</h3>
+
+<input id="name" placeholder="Name">
+<input id="email" placeholder="Email">
+<textarea id="message" placeholder="Message"></textarea>
+
+<button class="mainBtn primary" onclick="sendMessage()">Send</button>
+
+<p id="status"></p>
+
+</div>
+
+<div class="footer">© 2026 READING ASSISTANT BY MAGIN 😊</div>
+
+</div>
+
+<script>
+
+/* NAV */
+function goToApp(){
+  window.location.href = "reader.html";
+}
+
+function goToAbout(){
+  window.location.href = "about.html";
+}
+
+/* THEME TOGGLE */
+function toggleTheme(){
+
+document.body.classList.toggle("dark");
+
+localStorage.setItem(
+"theme",
+document.body.classList.contains("dark") ? "dark" : "light"
+);
+}
+
+/* LOAD THEME */
+window.onload = function(){
+const theme = localStorage.getItem("theme");
+if(theme === "dark"){
+document.body.classList.add("dark");
+}
+}
+
+/* CONTACT */
+function sendMessage(){
+
+const name = document.getElementById("name").value;
+const email = document.getElementById("email").value;
+const message = document.getElementById("message").value;
+
+if(!name || !email || !message){
+document.getElementById("status").innerText = "❌ Fill all fields";
+return;
+}
+
+document.getElementById("status").innerText = "📤 Sending...";
+
+setTimeout(()=>{
+document.getElementById("status").innerText = "✅ Sent!";
+},1000);
+
+}
+
+</script>
+
+
+<!-- WhatsApp Floating Button -->
+<a href="https://wa.me/256776314867" class="whatsapp-float" target="_blank">
+  <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" alt="WhatsApp">
+</a>
+
+<!-- Email Floating Button -->
+<a href="mailto:smglao8@gmail.com?subject=Inquiry&body=Hello," class="email-float">
+  ✉
+</a>
+
+<style>
+.whatsapp-float {
+  position: fixed;
+  width: 40px;
+  height: 40px;
+  bottom: 15px;
+  right: 15px;
+  background-color: #25D366;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.3);
+  z-index: 1000;
+  transition: transform 0.2s ease;
+}
+
+.whatsapp-float img {
+  width: 22px;
+  height: 22px;
+}
+
+.email-float {
+  position: fixed;
+  width: 40px;
+  height: 40px;
+  bottom: 70px;
+  right: 15px;
+  background-color: #007BFF;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  text-decoration: none;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.3);
+  z-index: 1000;
+  transition: transform 0.2s ease;
+}
+
+.whatsapp-float:hover,
+.email-float:hover {
+  transform: scale(1.1);
+}
+</style>
+
+
+
+
+</body>
+</html>

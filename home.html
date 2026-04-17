@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Home - Audiobook App</title>
+
+<link rel="stylesheet" href="style.css">
+
+<style>
+
+/* HERO */
+.hero {
+  text-align: center;
+  padding: 60px 20px;
+}
+
+.hero h1 {
+  font-size: 36px;
+}
+
+.hero p {
+  margin-top: 10px;
+  font-size: 18px;
+}
+
+/* BUTTON */
+.mainBtn {
+  margin-top: 20px;
+  padding: 15px 25px;
+  border-radius: 12px;
+  background: #3b82f6;
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.mainBtn:hover {
+  background: #2563eb;
+}
+
+/* CONTACT */
+.contact {
+  margin-top: 60px;
+  padding: 20px;
+  border-radius: 15px;
+  background: #1e293b;
+  color: white;
+}
+
+.contact input,
+.contact textarea {
+  width: 100%;
+  margin-top: 10px;
+  padding: 10px;
+  border-radius: 10px;
+  border: none;
+}
+
+/* FLOAT BUTTON */
+.back-home-btn {
+  position: fixed;
+  bottom: 25px;
+  right: 25px;
+  width: 55px;
+  height: 55px;
+  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+  color: white;
+  font-size: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  text-decoration: none;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+  transition: 0.3s;
+  z-index: 999;
+  animation: floatBtn 3s ease-in-out infinite;
+}
+
+.back-home-btn:hover {
+  transform: scale(1.15) rotate(10deg);
+}
+
+/* FLOAT ANIMATION */
+@keyframes floatBtn {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-6px); }
+  100% { transform: translateY(0px); }
+}
+
+</style>
+
+</head>
+
+<body>
+
+<!-- NAV -->
+<div class="nav">
+  <a href="home.html">🏠 Home</a>
+  <a href="about.html">👨‍💻 About</a>
+</div>
+
+<div class="container">
+
+<!-- HERO -->
+<div class="hero">
+
+<h1>🎧 Audiobook Assistant</h1>
+
+<p>Create, translate, and listen to audiobooks in a smarter way.</p>
+
+<button class="mainBtn" onclick="goToAbout()">
+👨‍💻 About Developer
+</button>
+
+</div>
+
+<!-- CONTACT -->
+<div class="contact">
+
+<h2>📩 Contact Us</h2>
+
+<input type="text" id="name" placeholder="Your Name">
+<input type="email" id="email" placeholder="Your Email">
+<textarea id="message" placeholder="Your Message"></textarea>
+
+<button class="mainBtn" onclick="sendMessage()">Send Message</button>
+
+<p id="status"></p>
+
+</div>
+
+</div>
+
+<!-- 🔊 CLICK SOUND -->
+<audio id="clickSound" src="https://www.soundjay.com/buttons/sounds/button-16.mp3"></audio>
+
+<!-- 🏠 FLOATING BUTTON -->
+<a href="index.html" class="back-home-btn" onclick="playClick()" title="Back to Home">
+🏠
+</a>
+
+<script>
+
+/* NAVIGATION */
+function goToAbout(){
+window.location.href = "about.html";
+}
+
+/* CONTACT */
+function sendMessage(){
+
+const name = document.getElementById("name").value;
+const email = document.getElementById("email").value;
+const message = document.getElementById("message").value;
+
+if(!name || !email || !message){
+document.getElementById("status").innerText =
+"❌ Please fill all fields";
+return;
+}
+
+document.getElementById("status").innerText = "📤 Sending...";
+
+setTimeout(()=>{
+document.getElementById("status").innerText = "✅ Message sent!";
+},1000);
+
+}
+
+/* 🔊 SOUND FUNCTION */
+function playClick(){
+const sound = document.getElementById("clickSound");
+sound.currentTime = 0;
+sound.play();
+}
+
+</script>
+
+</body>
+</html>

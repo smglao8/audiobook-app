@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Settings</title>
+
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<!-- NAV -->
+<div class="nav">
+  <a href="home.html">🏠 Home</a>
+  <a href="reader.html">📄 Reader</a>
+  <a href="generate.html">🎧 Generate</a>
+  <a href="library.html">📚 Library</a>
+  <a href="translate.html">🌍 Translate</a>
+  <a href="settings.html">⚙ Settings</a>
+</div>
+
+<div class="container">
+
+<h1>⚙ Audiobook Settings</h1>
+
+<p>Control voice, speed, and audiobook generation behavior.</p>
+
+<!-- ================= VOICE TYPE ================= -->
+<h3>🎙 Voice Type</h3>
+<select id="voiceType">
+  <option value="female">👩 Female Voice</option>
+  <option value="male">👨 Male Voice</option>
+  <option value="child">🧒 Child Voice</option>
+</select>
+
+<br><br>
+
+<!-- ================= VOICE MODEL ================= -->
+<h3>🎭 AI Voice Model</h3>
+<select id="voiceModel">
+  <option value="alloy">Alloy (Balanced)</option>
+  <option value="echo">Echo (Deep Male)</option>
+  <option value="fable">Fable (Story Style)</option>
+  <option value="onyx">Onyx (Strong Male)</option>
+  <option value="nova">Nova (Clear Female)</option>
+  <option value="shimmer">Shimmer (Soft Female)</option>
+</select>
+
+<br><br>
+
+<!-- ================= SPEED ================= -->
+<h3>⚡ Speech Speed</h3>
+<input type="range" id="speed" min="0.5" max="2" step="0.1">
+<p>Speed: <span id="speedValue"></span></p>
+
+<br>
+
+<!-- ================= CHUNK SIZE ================= -->
+<h3>✂️ Chunk Size (text per audio segment)</h3>
+<input type="range" id="chunkSize" min="500" max="3000" step="100">
+<p>Chunk Size: <span id="chunkValue"></span> characters</p>
+
+<br>
+
+<!-- ================= AUTO PLAY ================= -->
+<h3>🔊 Auto Play Chapters</h3>
+<select id="autoplay">
+  <option value="true">Enabled</option>
+  <option value="false">Disabled</option>
+</select>
+
+<br><br>
+
+<!-- ================= BUTTONS ================= -->
+<div class="controls">
+<button class="action" onclick="saveSettings()">💾 Save Settings</button>
+<button class="blue" onclick="loadSettings()">🔄 Reload Settings</button>
+</div>
+
+<!-- STATUS -->
+<div id="statusBox" class="card">
+Settings not saved yet.
+</div>
+
+</div>
+
+<script>
+
+/* ================= LOAD SETTINGS ================= */
+function loadSettings(){
+
+const settings = JSON.parse(localStorage.getItem("audiobookSettings"));
+
+if(!settings){
+document.getElementById("statusBox").innerText =
+"❌ No saved settings found.";
+updateLabels();
+return;
+}
+
+document.getElementById("voiceType").value = settings.voiceType || "female";
+document.getElementById("voiceModel").value = settings.voiceModel || "alloy";
+document.getElementById("speed").value = settings.speed || 1;
+document.getElementById("chunkSize").value = settings.chunkSize || 1500;
+document.getElementById("autoplay").value = settings.autoplay || "true";
+
+updateLabels();
+
+document.getElementById("statusBox").innerText =
+"✅ Settings loaded successfully.";
+}
+
+/* ================= SAVE SETTINGS ================= */
+function saveSettings(){
+
+const settings = {
+voiceType: document.getElementById("voiceType").value,
+voiceModel: document.getElementById("voiceModel").value,
+speed: document.getElementById("speed").value,
+chunkSize: document.getElementById("chunkSize").value,
+autoplay: document.getElementById("autoplay").value
+};
+
+localStorage.setItem("audiobookSettings", JSON.stringify(settings));
+
+document.getElementById("statusBox").innerText =
+"✅ Settings saved successfully!";
+}
+
+/* ================= LIVE LABELS ================= */
+function updateLabels(){
+
+document.getElementById("speedValue").innerText =
+document.getElementById("speed").value;
+
+document.getElementById("chunkValue").innerText =
+document.getElementById("chunkSize").value;
+}
+
+/* ================= LIVE SLIDERS ================= */
+document.getElementById("speed").oninput = updateLabels;
+document.getElementById("chunkSize").oninput = updateLabels;
+
+/* ================= AUTO LOAD ON OPEN ================= */
+loadSettings();
+
+</script>
+
+</body>
+</html>

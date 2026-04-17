@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Generate Audiobook</title>
+
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<!-- NAV -->
+<div class="nav">
+  <a href="home.html">🏠 Home</a>
+  <a href="reader.html">📄 Reader</a>
+  <a href="generate.html">🎧 Generate</a>
+  <a href="library.html">📚 Library</a>
+  <a href="translate.html">🌍 Translate</a>
+  <a href="settings.html">⚙ Settings</a>
+</div>
+
+<div class="container">
+
+<h1>🎧 Audiobook Generator</h1>
+
+<p>Convert your reader queue into a full AI audiobook.</p>
+
+<!-- CONTROLS -->
+<div class="controls">
+<button class="blue" onclick="loadQueue()">📥 Load Queue</button>
+<button class="action" onclick="generateAll()">⚡ Generate</button>
+<button class="stop" onclick="clearAll()">🧹 Clear</button>
+</div>
+
+<!-- STATUS -->
+<div id="statusBox" class="card">No queue loaded.</div>
+
+<!-- PROGRESS -->
+<h3>📊 Progress</h3>
+
+<div class="card">
+<p id="progressText">Waiting...</p>
+
+<div class="progressBar">
+<div class="progress" id="progressBar"></div>
+</div>
+
+<p id="progressPercent">0%</p>
+</div>
+
+<!-- RESULTS -->
+<h2>🎧 Chapters</h2>
+<div id="resultBox"></div>
+
+</div>
+
+<script>
+
+/* ================= STATE ================= */
+let queue = [];
+let results = [];
+
+let totalChunks = 0;
+let doneChunks = 0;
+
+/* ================= SETTINGS ================= */
+function getSettings(){
+return JSON.parse(localStorage.getItem("audiobookSettings")) || {};
+}
+
+/* ================= LOAD QUEUE ================= */
+function loadQueue(){
+
+const data = localStorage.getItem("audiobookQueue");
+
+if(!data){
+document.getElementById("statusBox").innerText =
+"❌ No queue found. Go to Reader first.";
+return;
+}
+
+queue = JSON.parse(data);
+
+document.getElementById("statusBox").innerText =
+`📥 Loaded ${queue.length} pages`;
+}
+
+/* ================= CHUNK TEXT ================= */
+function chunkText(text){
+
+const size = getSettings().chunkSize || 1500;
+
+let chunks = [];
+
+for(let i = 0; i < text.length; i += size){
+chunks.push(text.slice(i, i + size));
+}
+
+return chunks;
+}
+
+/* ================= PROGRESS ================= */
+function initProgress(){
+
+doneChunks = 0;
+
+totalChunks = queue.reduce((sum, page)=>{
+return sum + chunkText(page.text).length;
+}, 0);
+
+if(totalChunks <= 0) totalChunks = 1;
+
+updateProgress("Starting generation...", 0);
+}
+
+function updateProgress(text, percent){
+
+if(isNaN(percent)) percent = 0;
+if(percent > 100) percent = 100;
+
+document.getElementById("progressText").innerText = text;
+document.getElementById("progressBar").style.width = percent + "%";
+document.getElementById("progressPercent").innerText =
+Math.floor(percent) + "%";
+}
+
+/* ================= VOICE ================= */
+function getVoiceFromSettings(){
+
+const settings = getSettings();
+const type = settings.voiceType || "female";
+
+switch(type){
+case "male": return "onyx";
+case "female": return "nova";
+case "child": return "shimmer";
+default: return "alloy";
+}
+}
+
+/* ================= GENERATE AUDIOBOOK ================= */
+async function generateAll(){
+
+if(queue.length === 0){
+document.getElementById("statusBox").innerText =
+"❌ Load queue first.";
+return;
+}
+
+results = [];
+document.getElementById("resultBox").innerHTML = "";
+
+initProgress();
+
+const voiceModel = getVoiceFromSettings();
+
+let localCount = 0;
+
+for(let i = 0; i < queue.length; i++){
+
+const page = queue[i];
+const chunks = chunkText(page.text);
+
+for(let j = 0; j < chunks.length; j++){
+
+document.getElementById("statusBox").innerText =
+`🎧 Page ${page.page} - Chunk ${j+1}/${chunks.length}`;
+
+try{
+
+const res = await fetch("http://localhost:3000/tts",{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({
+text: chunks[j],
+voice: voiceModel
+})
+});
+
+const data = await res.json();
+
+console.log("TTS RESPONSE:", data);
+
+/* ================= SAFE AUDIO URL ================= */
+const audioFile =
+data.file || data.url || data.audio || null;
+
+if(!audioFile){
+console.warn("Missing audio file:", data);
+continue;
+}
+
+results.push({
+page: page.page,
+part: j + 1,
+file: audioFile,
+text: chunks[j]
+});
+
+localCount++;
+
+let percent = (localCount / totalChunks) * 100;
+
+updateProgress(
+`Generating Page ${page.page}`,
+percent
+);
+
+}catch(err){
+console.error(err);
+
+document.getElementById("statusBox").innerText =
+"⚠ Error generating chunk, continuing...";
+}
+}
+}
+
+/* ================= SAFETY CHECK ================= */
+if(results.length === 0){
+document.getElementById("statusBox").innerText =
+"❌ No audio generated. Check backend response.";
+return;
+}
+
+updateProgress("Completed!", 100);
+
+document.getElementById("statusBox").innerText =
+"✅ Audiobook generation complete!";
+
+renderResults();
+saveToLibrary();
+}
+
+/* ================= RENDER RESULTS ================= */
+function renderResults(){
+
+const box = document.getElementById("resultBox");
+
+box.innerHTML = results.map(r=>`
+
+<div class="card">
+<h3>📖 Page ${r.page} - Part ${r.part}</h3>
+
+<audio controls>
+<source src="${r.file}" type="audio/mpeg">
+</audio>
+
+<p>${r.text.slice(0,120)}...</p>
+</div>
+
+`).join("");
+}
+
+/* ================= SAVE TO LIBRARY ================= */
+function saveToLibrary(){
+
+let library = localStorage.getItem("audiobookLibrary");
+library = library ? JSON.parse(library) : [];
+
+if(results.length === 0){
+alert("Nothing to save");
+return;
+}
+
+library.push({
+id: Date.now(),
+pages: queue.length,
+files: results,
+created: new Date().toISOString()
+});
+
+localStorage.setItem("audiobookLibrary", JSON.stringify(library));
+
+console.log("Library saved:", library);
+}
+
+/* ================= CLEAR ================= */
+function clearAll(){
+
+queue = [];
+results = [];
+
+localStorage.removeItem("audiobookQueue");
+
+document.getElementById("resultBox").innerHTML = "";
+document.getElementById("statusBox").innerText = "🧹 Cleared";
+
+updateProgress("Waiting...", 0);
+}
+
+</script>
+
+</body>
+</html>

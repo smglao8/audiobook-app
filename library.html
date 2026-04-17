@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Audiobook Library</title>
+
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div class="nav">
+  <a href="home.html">🏠 Home</a>
+  <a href="reader.html">📄 Reader</a>
+  <a href="generate.html">🎧 Generate</a>
+  <a href="library.html">📚 Library</a>
+  <a href="translate.html">🌍 Translate</a>
+  <a href="settings.html">⚙ Settings</a>
+</div>
+
+<div class="container">
+
+<h1>📚 Audiobook Library</h1>
+
+<div class="controls">
+<button class="blue" onclick="loadLibrary()">📥 Load Library</button>
+<button class="stop" onclick="clearLibrary()">🗑 Clear All</button>
+</div>
+
+<div id="statusBox" class="card">Click "Load Library"</div>
+
+<div id="libraryBox"></div>
+
+</div>
+
+<script>
+
+let library = [];
+
+/* ================= SPEECH STATE ================= */
+let speech = null;
+let isPaused = false;
+
+/* ================= LOAD LIBRARY ================= */
+function loadLibrary(){
+
+const data = localStorage.getItem("audiobookLibrary");
+
+if(!data){
+document.getElementById("statusBox").innerText =
+"❌ No audiobooks found.";
+return;
+}
+
+library = JSON.parse(data);
+
+document.getElementById("statusBox").innerText =
+`📚 Loaded ${library.length} audiobook(s)`;
+
+renderLibrary();
+}
+
+/* ================= RENDER ================= */
+function renderLibrary(){
+
+const box = document.getElementById("libraryBox");
+
+box.innerHTML = library.map((book, i)=>`
+
+<div class="card">
+
+<h3>📖 Audiobook ${i+1}</h3>
+
+<p>Pages: ${book.pages || 0}</p>
+<p>Created: ${book.created || "Unknown"}</p>
+
+<div class="controls">
+
+<button class="action" onclick="playAll(${i})">▶ Play</button>
+<button class="pause" onclick="pauseSpeech()">⏸ Pause</button>
+<button class="blue" onclick="resumeSpeech()">▶ Continue</button>
+<button class="stop" onclick="stopSpeech()">⏹ Stop</button>
+<button class="action" onclick="openBook(${i})">📖 View</button>
+<button class="purple" onclick="downloadBook(${i})">⬇ Download</button>
+<button class="stop" onclick="deleteBook(${i})">🗑 Delete</button>
+
+</div>
+
+<div id="book-${i}" class="viewer"></div>
+
+</div>
+
+`).join("");
+}
+
+/* ================= OPEN BOOK ================= */
+function openBook(i){
+
+const book = library[i];
+const box = document.getElementById(`book-${i}`);
+
+const parts = book.files || [];
+
+if(!parts.length){
+box.innerHTML = "<p>No content found</p>";
+return;
+}
+
+box.innerHTML = parts.map((p, idx)=>`
+
+<div class="card">
+
+<h4>🎧 Part ${idx+1}</h4>
+
+<p>${(p.text || "").slice(0,120)}</p>
+
+<button class="action" onclick="playText(\`${(p.text || "").replace(/`/g,"")}\`)">
+▶ Play This
+</button>
+
+</div>
+
+`).join("");
+}
+
+/* ================= SPEECH ENGINE ================= */
+function playText(text){
+
+if(!text) return;
+
+speech = new SpeechSynthesisUtterance(text);
+
+const settings =
+JSON.parse(localStorage.getItem("audiobookSettings")) || {};
+
+speech.rate = settings.speed || 1;
+
+const voices = speechSynthesis.getVoices();
+
+if(settings.voiceIndex !== undefined && voices.length){
+speech.voice = voices[settings.voiceIndex];
+}
+
+speechSynthesis.cancel();
+speechSynthesis.speak(speech);
+
+isPaused = false;
+}
+
+/* ================= PLAY ALL ================= */
+function playAll(i){
+
+const book = library[i];
+const parts = book.files || [];
+
+let index = 0;
+
+function next(){
+
+if(index >= parts.length) return;
+
+playText(parts[index].text);
+
+index++;
+
+setTimeout(next, 2000 + (parts[index-1]?.text?.length || 50) * 20);
+}
+
+next();
+}
+
+/* ================= CONTROLS ================= */
+function pauseSpeech(){
+speechSynthesis.pause();
+isPaused = true;
+}
+
+function resumeSpeech(){
+speechSynthesis.resume();
+isPaused = false;
+}
+
+function stopSpeech(){
+speechSynthesis.cancel();
+isPaused = false;
+}
+
+/* ================= DOWNLOAD BOOK ================= */
+function downloadBook(i){
+
+const book = library[i];
+
+const text = (book.files || [])
+.map(p => p.text)
+.join("\n\n");
+
+const blob = new Blob([text], {type: "text/plain"});
+
+const url = URL.createObjectURL(blob);
+
+const a = document.createElement("a");
+a.href = url;
+a.download = `audiobook_${i+1}.txt`;
+
+document.body.appendChild(a);
+a.click();
+document.body.removeChild(a);
+
+URL.revokeObjectURL(url);
+}
+
+/* ================= DELETE ================= */
+function deleteBook(i){
+
+library.splice(i,1);
+
+localStorage.setItem("audiobookLibrary", JSON.stringify(library));
+
+renderLibrary();
+
+document.getElementById("statusBox").innerText =
+"🗑 Deleted";
+}
+
+/* ================= CLEAR ALL ================= */
+function clearLibrary(){
+
+library = [];
+
+localStorage.removeItem("audiobookLibrary");
+
+document.getElementById("libraryBox").innerHTML = "";
+
+document.getElementById("statusBox").innerText =
+"🧹 Library cleared";
+}
+
+</script>
+
+</body>
+</html>

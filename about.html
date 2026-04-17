@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>About the Developer - Magin</title>
+
+<style>
+body{
+  margin:0;
+  font-family: 'Segoe UI', sans-serif;
+  background:#ffffff; /* FULL white background */
+  color:#111827; /* dark text */
+  overflow-x:hidden;
+}
+
+/* ANIMATION */
+.fade{
+  animation:fadeIn 1.2s ease-in-out;
+}
+@keyframes fadeIn{
+  from{opacity:0; transform:translateY(20px);}
+  to{opacity:1; transform:translateY(0);}
+}
+
+.container{
+  max-width:1000px;
+  margin:40px auto;
+  padding:30px;
+}
+
+.card{
+  background:#bfc9df;
+  border-radius:15px;
+  padding:30px;
+  margin-bottom:25px;
+  box-shadow:0 10px 30px rgba(0,0,0,0.5);
+  transition:0.3s;
+}
+.card:hover{
+  transform:translateY(-5px);
+}
+
+/* HEADER */
+.header{
+  text-align:center;
+}
+.profile{
+  width:120px;
+  height:120px;
+  border-radius:50%;
+  background:#3b82f6;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:50px;
+  margin:0 auto 15px;
+}
+
+/* TEXT */
+h1,h2{
+  margin-bottom:10px;
+}
+p{
+  line-height:1.7;
+}
+
+/* SKILLS */
+.skills{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+}
+.skill{
+  background:#3b82f6;
+  padding:8px 12px;
+  border-radius:20px;
+  font-size:14px;
+}
+
+/* SOCIAL */
+.social{
+  display:flex;
+  gap:15px;
+  justify-content:center;
+  margin-top:15px;
+}
+.social a{
+  text-decoration:none;
+  padding:10px 15px;
+  border-radius:10px;
+  background:#22c55e;
+  color:white;
+  transition:0.3s;
+}
+.social a:hover{
+  background:#16a34a;
+}
+
+/* BUTTON */
+.btn{
+  display:block;
+  width:220px;
+  margin:30px auto;
+  padding:12px;
+  text-align:center;
+  background:#8b5cf6;
+  border-radius:10px;
+  color:white;
+  text-decoration:none;
+}
+.btn:hover{
+  background:#7c3aed;
+}
+
+</style>
+</head>
+
+<body>
+
+
+<!-- ABOUT HERO -->
+<div class="card fade about-hero">
+  <h2 class="title">WELCOME</h2>
+
+  <p class="subtitle">
+    Explore the story, passion, and innovation behind what I build.
+  </p>
+
+  <div class="line"></div>
+
+  <p class="tagline">
+    Where creativity meets technology — discover the vision below.
+  </p>
+
+  <div class="icons">
+    <span>⚡</span>
+    <span>🚀</span>
+    <span>💡</span>
+    <span>🤖</span>
+  </div>
+</div>
+
+<style>
+.about-hero {
+  text-align: center;
+  padding: 30px 20px;
+  background: linear-gradient(135deg, #c3d3f8, #b7c7e6);
+  border-radius: 12px;
+  color: white;
+}
+
+.title {
+  font-size: 28px;
+  letter-spacing: 4px;
+  font-weight: 800;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+}
+
+.subtitle {
+  font-size: 14px;
+  opacity: 0.9;
+  max-width: 420px;
+  margin: -5px auto;
+}
+
+.tagline {
+  font-size: 13px;
+  opacity: 0.7;
+  margin-top: 10px;
+}
+
+.line {
+  width: 60px;
+  height: 2px;
+  background: #25D366;
+  margin: 15px auto;
+  border-radius: 5px;
+}
+
+.icons {
+  font-size: 24px;
+  display: flex;
+  justify-content: center;
+  gap: 18px;
+  margin-top: 18px;
+  animation: floatIcons 2.5s infinite ease-in-out;
+}
+
+.icons span {
+  transition: transform 0.3s ease, filter 0.3s ease;
+  cursor: default;
+}
+
+.icons span:hover {
+  transform: scale(1.5);
+  filter: drop-shadow(0 0 6px rgba(255,255,255,0.5));
+}
+
+@keyframes floatIcons {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+</style>
+
+
+
+<div class="container fade">
+
+<!-- HEADER -->
+<div class="card header">
+ <div class="profile">
+  <img src="me.JPEG" alt="Profile Photo">
+</div>
+
+<style>
+.profile img {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+</style>
+  <h1>Magin</h1>
+  <p>Software Developer • AI Enthusiast • Innovator</p>
+
+  <div class="social">
+    <a href="#">GitHub</a>
+    <a href="#">LinkedIn</a>
+  </div>
+</div>
+
+
+
+<!-- SKILLS -->
+<div class="card fade">
+  <h2>🧠 Skills & Technologies</h2>
+  <div class="skills">
+    <div class="skill">JavaScript</div>
+    <div class="skill">HTML & CSS</div>
+    <div class="skill">AI Integration</div>
+    <div class="skill">C</div>
+    <div class="skill">Java</div>
+    <div class="skill">Web Apps</div>
+  </div>
+</div>
+
+<!-- PROJECT -->
+<div class="card fade">
+  <h2>📖 About This Project</h2>
+  <p>
+    Reading Assistant is designed to transform how users interact with documents by enabling:
+  </p>
+  <ul>
+    <li>📄 Document reading (PDF, DOCX, TXT)</li>
+    <li>🔊 Voice playback with multiple voices</li>
+    <li>🌍 Translation capabilities</li>
+    <li>⬇ Audio export for offline listening</li>
+  </ul>
+</div>
+
+<!-- VISION -->
+<div class="card fade">
+  <h2>🌍 Vision</h2>
+  <p>
+    My goal is to build intelligent applications that feel natural, helpful, and powerful —
+    bringing human-like interaction into everyday digital tools.
+  </p>
+  <p>
+
+    Passionate software developments focused on building intelligent and user-friendly digital solutions. With a strong interest in artificial intelligence, accessibility, and productivity tools, Magin aims to create applications that simplify everyday tasks and enhance how people interact with technology.
+    Projects reflect a commitment to innovation, combining document processing, text-to-speech technology, and translation features into a single seamless experience. Magin continues to explore new ideas and improve existing systems to deliver smarter, more efficient applications.
+
+  </p>
+</div>
+
+<!-- BACK BUTTON -->
+<a href="index.html" class="btn">⬅ Visit Application</a>
+
+</div>
+
+<!-- WhatsApp Floating Button -->
+<a href="https://wa.me/256776314867" class="whatsapp-float" target="_blank">
+  <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" alt="WhatsApp">
+</a>
+
+<!-- Email Floating Button -->
+<a href="mailto:smglao8@gmail.com?subject=Inquiry&body=Hello," class="email-float">
+  ✉
+</a>
+
+<style>
+.whatsapp-float {
+  position: fixed;
+  width: 40px;
+  height: 40px;
+  bottom: 15px;
+  right: 15px;
+  background-color: #25D366;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.3);
+  z-index: 1000;
+  transition: transform 0.2s ease;
+}
+
+.whatsapp-float img {
+  width: 22px;
+  height: 22px;
+}
+
+.email-float {
+  position: fixed;
+  width: 40px;
+  height: 40px;
+  bottom: 70px;
+  right: 15px;
+  background-color: #007BFF;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  text-decoration: none;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.3);
+  z-index: 1000;
+  transition: transform 0.2s ease;
+}
+
+.whatsapp-float:hover,
+.email-float:hover {
+  transform: scale(1.1);
+}
+</style>
+
+
+</body>
+</html>

@@ -1,0 +1,223 @@
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:system-ui, -apple-system, sans-serif;
+}
+
+body{
+background:linear-gradient(135deg,#eef2ff,#dbeafe);
+color:#111;
+min-height:100vh;
+}
+
+/* ================= NAVIGATION ================= */
+.nav{
+display:flex;
+flex-wrap:wrap;
+justify-content:center;
+gap:10px;
+padding:14px;
+background:#1f2937;
+position:sticky;
+top:0;
+z-index:100;
+}
+
+.nav a{
+text-decoration:none;
+color:white;
+background:#3b82f6;
+padding:10px 14px;
+border-radius:999px;
+font-size:14px;
+transition:0.2s;
+}
+
+.nav a:hover{
+background:#2563eb;
+transform:scale(1.05);
+}
+
+/* ================= MAIN CONTAINER ================= */
+.container{
+max-width:1000px;
+margin:20px auto;
+padding:20px;
+background:white;
+border-radius:16px;
+box-shadow:0 10px 30px rgba(0,0,0,0.1);
+}
+
+/* ================= HEADINGS ================= */
+h1{
+font-size:28px;
+margin-bottom:10px;
+}
+
+h2{
+margin-top:20px;
+margin-bottom:10px;
+}
+
+p{
+line-height:1.6;
+margin-bottom:10px;
+color:#374151;
+}
+
+/* ================= FILE VIEWER ================= */
+.viewer{
+width:100%;
+height:400px;
+overflow-y:auto;
+background:#f3f4f6;
+padding:15px;
+border-radius:12px;
+white-space:pre-wrap;
+line-height:1.6;
+border:1px solid #e5e7eb;
+}
+
+/* ================= TEXTAREAS ================= */
+textarea{
+width:100%;
+min-height:140px;
+padding:12px;
+border-radius:12px;
+border:1px solid #d1d5db;
+margin-top:10px;
+resize:vertical;
+}
+
+/* ================= INPUTS ================= */
+input[type="file"], select, input[type="range"]{
+margin-top:10px;
+margin-bottom:10px;
+padding:10px;
+border-radius:10px;
+border:1px solid #d1d5db;
+width:100%;
+}
+
+/* ================= BUTTONS ================= */
+button{
+padding:10px 14px;
+border:none;
+border-radius:12px;
+cursor:pointer;
+font-weight:500;
+transition:0.2s;
+margin:5px 0;
+}
+
+button:hover{
+transform:scale(1.03);
+}
+
+/* Primary action button */
+.action{
+background:#22c55e;
+color:white;
+}
+
+.action:hover{
+background:#16a34a;
+}
+
+/* Pause button */
+.pause{
+background:#f59e0b;
+color:white;
+}
+
+.pause:hover{
+background:#d97706;
+}
+
+/* Stop button */
+.stop{
+background:#ef4444;
+color:white;
+}
+
+.stop:hover{
+background:#dc2626;
+}
+
+/* Blue button */
+.blue{
+background:#3b82f6;
+color:white;
+}
+
+.blue:hover{
+background:#2563eb;
+}
+
+/* Purple button */
+.purple{
+background:#8b5cf6;
+color:white;
+}
+
+.purple:hover{
+background:#7c3aed;
+}
+
+/* ================= CONTROLS SECTION ================= */
+.controls{
+display:flex;
+flex-wrap:wrap;
+gap:10px;
+margin-top:10px;
+}
+
+/* ================= PROGRESS BAR ================= */
+.progressBar{
+width:100%;
+height:8px;
+background:#e5e7eb;
+border-radius:999px;
+overflow:hidden;
+margin-top:15px;
+}
+
+.progress{
+height:100%;
+width:0%;
+background:#22c55e;
+transition:width 0.2s;
+}
+
+/* ================= CARDS (Library items later) ================= */
+.card{
+background:#f9fafb;
+padding:15px;
+border-radius:12px;
+border:1px solid #e5e7eb;
+margin-bottom:10px;
+}
+
+/* ================= AUDIO PLAYER ================= */
+audio{
+width:100%;
+margin-top:10px;
+}
+
+/* ================= RESPONSIVE ================= */
+@media (max-width:768px){
+.container{
+margin:10px;
+padding:15px;
+}
+
+.nav a{
+font-size:12px;
+padding:8px 10px;
+}
+
+.viewer{
+height:300px;
+}
+}
