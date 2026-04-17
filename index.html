@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Reading Assistant</title>
 
 <link rel="stylesheet" href="style.css">
@@ -28,6 +29,7 @@ body {
   background: var(--bg);
   color: var(--text);
   transition: 0.5s;
+  overflow-x: hidden;
 }
 
 /* NAV */
@@ -37,19 +39,22 @@ body {
   padding: 15px 30px;
   background: var(--card);
   backdrop-filter: blur(10px);
+  flex-wrap: wrap;
 }
 
-/* TOGGLE */
 .toggle {
   cursor: pointer;
+  font-size: 18px;
 }
 
 /* CONTAINER */
 .container {
-  padding: 30px;
+  padding: 20px;
+  max-width: 1100px;
+  margin: auto;
 }
 
-/* FLOAT CARDS */
+/* CARDS */
 .card {
   background: var(--card);
   backdrop-filter: blur(12px);
@@ -58,7 +63,6 @@ body {
   box-shadow: 0 10px 25px rgba(0,0,0,0.1);
   margin-bottom: 20px;
 
-  /* animation */
   opacity: 0;
   transform: translateY(20px);
   animation: fadeUp 0.8s forwards;
@@ -76,6 +80,14 @@ body {
   text-align: center;
 }
 
+.hero h1 {
+  font-size: 32px;
+}
+
+.hero p {
+  font-size: 16px;
+}
+
 /* BUTTONS */
 .mainBtn {
   padding: 12px 20px;
@@ -83,6 +95,7 @@ body {
   border-radius: 12px;
   border: none;
   cursor: pointer;
+  font-size: 16px;
 }
 
 .primary { background:#3b82f6; color:white; }
@@ -91,7 +104,7 @@ body {
 /* GRID */
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit,minmax(220px,1fr));
+  grid-template-columns: repeat(auto-fit, minmax(220px,1fr));
   gap: 20px;
 }
 
@@ -102,6 +115,7 @@ input, textarea {
   padding: 10px;
   border-radius: 10px;
   border: none;
+  font-size: 16px;
 }
 
 /* ANIMATION */
@@ -118,6 +132,122 @@ input, textarea {
   margin-top: 20px;
 }
 
+/* =========================
+   MOBILE RESPONSIVE
+========================= */
+@media (max-width: 768px) {
+
+  .nav {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 10px;
+  }
+
+  .hero h1 {
+    font-size: 24px;
+  }
+
+  .hero p {
+    font-size: 14px;
+  }
+
+  .mainBtn {
+    width: 100%;
+    font-size: 15px;
+    padding: 12px;
+  }
+
+  .card {
+    padding: 15px;
+  }
+
+  .toggle {
+    font-size: 16px;
+  }
+
+  input, textarea {
+    font-size: 15px;
+  }
+}
+
+/* SMALL PHONES */
+@media (max-width: 400px) {
+
+  .hero h1 {
+    font-size: 20px;
+  }
+
+  .hero p {
+    font-size: 13px;
+  }
+
+  .mainBtn {
+    font-size: 14px;
+  }
+}
+
+/* FLOAT BUTTONS MOBILE FIX */
+@media (max-width: 768px) {
+
+  .whatsapp-float,
+  .email-float {
+    width: 45px;
+    height: 45px;
+  }
+
+  .email-float {
+    bottom: 65px;
+  }
+}
+
+/* WHATSAPP */
+.whatsapp-float {
+  position: fixed;
+  width: 40px;
+  height: 40px;
+  bottom: 15px;
+  right: 15px;
+  background-color: #25D366;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.3);
+  z-index: 1000;
+  transition: transform 0.2s ease;
+}
+
+.whatsapp-float img {
+  width: 22px;
+  height: 22px;
+}
+
+/* EMAIL */
+.email-float {
+  position: fixed;
+  width: 40px;
+  height: 40px;
+  bottom: 70px;
+  right: 15px;
+  background-color: #007BFF;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  text-decoration: none;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.3);
+  z-index: 1000;
+  transition: transform 0.2s ease;
+}
+
+.whatsapp-float:hover,
+.email-float:hover {
+  transform: scale(1.1);
+}
+
 </style>
 
 </head>
@@ -127,10 +257,7 @@ input, textarea {
 <!-- NAV -->
 <div class="nav">
   <div>🎧 Audiobook</div>
-
-  <div>
-    <span class="toggle" onclick="toggleTheme()">🌙 / ☀️</span>
-  </div>
+  <div class="toggle" onclick="toggleTheme()">🌙 / ☀️</div>
 </div>
 
 <div class="container">
@@ -175,9 +302,17 @@ input, textarea {
 
 </div>
 
+<!-- FLOATING BUTTONS -->
+<a href="https://wa.me/256776314867" class="whatsapp-float" target="_blank">
+  <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png">
+</a>
+
+<a href="mailto:smglao8@gmail.com?subject=Inquiry&body=Hello," class="email-float">
+  ✉
+</a>
+
 <script>
 
-/* NAV */
 function goToApp(){
   window.location.href = "reader.html";
 }
@@ -186,9 +321,7 @@ function goToAbout(){
   window.location.href = "about.html";
 }
 
-/* THEME TOGGLE */
 function toggleTheme(){
-
 document.body.classList.toggle("dark");
 
 localStorage.setItem(
@@ -197,7 +330,6 @@ document.body.classList.contains("dark") ? "dark" : "light"
 );
 }
 
-/* LOAD THEME */
 window.onload = function(){
 const theme = localStorage.getItem("theme");
 if(theme === "dark"){
@@ -205,7 +337,6 @@ document.body.classList.add("dark");
 }
 }
 
-/* CONTACT */
 function sendMessage(){
 
 const name = document.getElementById("name").value;
@@ -226,67 +357,6 @@ document.getElementById("status").innerText = "✅ Sent!";
 }
 
 </script>
-
-
-<!-- WhatsApp Floating Button -->
-<a href="https://wa.me/256776314867" class="whatsapp-float" target="_blank">
-  <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" alt="WhatsApp">
-</a>
-
-<!-- Email Floating Button -->
-<a href="mailto:smglao8@gmail.com?subject=Inquiry&body=Hello," class="email-float">
-  ✉
-</a>
-
-<style>
-.whatsapp-float {
-  position: fixed;
-  width: 40px;
-  height: 40px;
-  bottom: 15px;
-  right: 15px;
-  background-color: #25D366;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 3px 8px rgba(0,0,0,0.3);
-  z-index: 1000;
-  transition: transform 0.2s ease;
-}
-
-.whatsapp-float img {
-  width: 22px;
-  height: 22px;
-}
-
-.email-float {
-  position: fixed;
-  width: 40px;
-  height: 40px;
-  bottom: 70px;
-  right: 15px;
-  background-color: #007BFF;
-  color: white;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 18px;
-  text-decoration: none;
-  box-shadow: 0 3px 8px rgba(0,0,0,0.3);
-  z-index: 1000;
-  transition: transform 0.2s ease;
-}
-
-.whatsapp-float:hover,
-.email-float:hover {
-  transform: scale(1.1);
-}
-</style>
-
-
-
 
 </body>
 </html>
