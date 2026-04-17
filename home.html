@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Home - Audiobook App</title>
 
 <link rel="stylesheet" href="style.css">
@@ -89,6 +90,91 @@
   100% { transform: translateY(0px); }
 }
 
+/* =========================
+   RESPONSIVE DESIGN
+========================= */
+
+.container {
+  max-width: 900px;
+  margin: auto;
+  padding: 20px;
+}
+
+/* NAV */
+.nav {
+  display: flex;
+  gap: 20px;
+  padding: 10px 20px;
+  background: #0f172a;
+}
+
+.nav a {
+  color: white;
+  text-decoration: none;
+  font-size: 18px;
+}
+
+/* MOBILE VIEW */
+@media (max-width: 768px) {
+
+  .nav {
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .hero {
+    padding: 40px 15px;
+  }
+
+  .hero h1 {
+    font-size: 26px;
+  }
+
+  .hero p {
+    font-size: 15px;
+  }
+
+  .mainBtn {
+    width: 100%;
+    font-size: 15px;
+    padding: 12px;
+  }
+
+  .contact {
+    padding: 15px;
+  }
+
+  .contact input,
+  .contact textarea {
+    font-size: 15px;
+  }
+
+  .back-home-btn {
+    width: 48px;
+    height: 48px;
+    font-size: 20px;
+    bottom: 15px;
+    right: 15px;
+  }
+}
+
+/* SMALL PHONES */
+@media (max-width: 400px) {
+
+  .hero h1 {
+    font-size: 22px;
+  }
+
+  .hero p {
+    font-size: 14px;
+  }
+
+  .nav a {
+    font-size: 16px;
+  }
+}
+
 </style>
 
 </head>
@@ -169,7 +255,7 @@ document.getElementById("status").innerText = "✅ Message sent!";
 
 }
 
-/* 🔊 SOUND FUNCTION */
+/* SOUND */
 function playClick(){
 const sound = document.getElementById("clickSound");
 sound.currentTime = 0;
